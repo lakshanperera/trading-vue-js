@@ -2,9 +2,9 @@
 <template>
     <div class="tvjs-item-list" :style="list_style()"
         @mousedown="thismousedown">
-        <div v-for="item of items" :class="item_class(item)"
-            v-if="!item.hidden" @click="e => item_click(e, item)"
-                :style="item_style(item)">
+        <div v-for="item of items" v-if="!item.hidden"
+            :class="item_class(item)" :style="item_style(item)"
+                @click="e => item_click(e, item)">
             <div class="trading-vue-tbicon tvjs-pixelated"
                 :style="icon_style(item)">
             </div>
@@ -18,6 +18,13 @@
 export default {
     name: 'ItemList',
     props: ['config', 'items', 'colors', 'dc'],
+    data() {
+        return {
+
+        }
+    },
+    computed: {
+    },
     mounted() {
         window.addEventListener(
             'mousedown', this.onmousedown
@@ -44,9 +51,9 @@ export default {
         },
         item_class(item) {
             if (this.dc.tool === item.type) {
-                return "tvjs-item-list-item selected-item"
+                return 'tvjs-item-list-item selected-item'
             }
-            return "tvjs-item-list-item"
+            return 'tvjs-item-list-item'
         },
         item_style(item) {
             let conf = this.$props.config
@@ -54,7 +61,7 @@ export default {
             let sel = this.dc.tool === item.type
             return {
                 height: `${h}px`,
-                color: sel ? undefined : `#888888`
+                color: sel ? undefined : '#888888'
             }
         },
         icon_style(data) {
@@ -79,13 +86,6 @@ export default {
         },
         thismousedown(e) {
             e.stopPropagation()
-        }
-    },
-    computed: {
-    },
-    data() {
-        return {
-
         }
     }
 }

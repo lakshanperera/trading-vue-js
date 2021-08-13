@@ -23,8 +23,8 @@ export function f_args(src) {
 }
 export function f_body(src) {
     return src.slice(
-        src.indexOf("{") + 1,
-        src.lastIndexOf("}")
+        src.indexOf('{') + 1,
+        src.lastIndexOf('}')
     )
 }
 
@@ -75,8 +75,8 @@ export function get_raw_src(f) {
     if (typeof f === 'string') return f
     let src = f.toString()
     return src.slice(
-        src.indexOf("{") + 1,
-        src.lastIndexOf("}")
+        src.indexOf('{') + 1,
+        src.lastIndexOf('}')
     )
 }
 

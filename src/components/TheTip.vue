@@ -1,22 +1,22 @@
 <template>
     <div class="tvjs-the-tip"
-        v-html="data.text" @mousedown="$emit('remove-me')"
-        :style="style">
+        :style="style" @mousedown="$emit('remove-me')"
+        v-html="data.text">
     </div>
 </template>
 <script>
 export default {
     name: 'TheTip',
     props: ['data'],
-    mounted() {
-        setTimeout(() => this.$emit('remove-me'), 3000)
-    },
     computed: {
         style() {
             return {
                 background: this.data.color
             }
         }
+    },
+    mounted() {
+        setTimeout(() => this.$emit('remove-me'), 3000)
     },
 }
 </script>

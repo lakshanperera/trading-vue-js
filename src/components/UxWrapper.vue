@@ -11,23 +11,23 @@
 -->
 
 <template>
-<div class="trading-vue-ux-wrapper" v-if="visible"
-    :id="`tvjs-ux-wrapper-${ux.uuid}`"
+<div v-if="visible" :id="`tvjs-ux-wrapper-${ux.uuid}`"
+    class="trading-vue-ux-wrapper"
     :style="style">
     <component
-        @custom-event="on_custom_event"
+        :is="ux.component"
         :ux="ux" :updater="updater" :wrapper="wrapper"
         :colors="colors"
-        v-bind:is="ux.component"></component>
+        @custom-event="on_custom_event"></component>
     <div v-if="ux.show_pin"
         :style="pin_style"
         class="tvjs-ux-wrapper-pin">
     </div>
-    <div class="tvjs-ux-wrapper-head"
-        v-if="ux.win_header !== false">
+    <div v-if="ux.win_header !== false"
+        class="tvjs-ux-wrapper-head">
         <div class="tvjs-ux-wrapper-close"
-            @click="close"
             :style="btn_style"
+            @click="close"
         >×</div>
     </div>
 </div>
@@ -40,6 +40,107 @@ import Utils from '../stuff/utils.js'
 export default {
     name: 'UxWrapper',
     props: ['ux', 'updater', 'colors', 'config'],
+    data() {
+        return {
+            x: 0,
+            y: 0,
+            w: 0,
+            h: 0,
+            visible: true
+        }
+    },
+    computed: {
+        uxr() {
+            return this.$props.ux // just a ref
+        },
+        layout() {
+            return this.$props.ux.overlay.layout
+        },
+        settings() {
+            return this.$props.ux.overlay.settings
+        },
+        uuid() {
+            return `tvjs-ux-wrapper-${this.uxr.uuid}`
+        },
+        mouse() {
+            return this.uxr.overlay.mouse
+        },
+        style() {
+            let st = {
+                'display': this.uxr.hidden ? 'none' : undefined,
+                'left': `${this.x}px`,
+                'top': `${this.y}px`,
+                'pointer-events': this.uxr.pointer_events || 'all',
+                'z-index': this.z_index
+            }
+            if (this.uxr.win_styling !== false)
+                st = Object.assign(st, {
+                    'border': `1px solid ${this.$props.colors.grid}`,
+                    'border-radius': '3px',
+                    'background': `${this.background}`,
+                })
+            return st
+        },
+        pin_style() {
+            return {
+                'left': `${ -this.ox }px`,
+                'top': `${ -this.oy }px`,
+                'background-color': this.uxr.pin_color
+            }
+        },
+        btn_style() {
+            return {
+                'background': `${this.inactive_btn_color}`,
+                'color': `${this.inactive_btn_color}`,
+            }
+        },
+        pin_pos() {
+            return this.uxr.pin_position ?
+                this.uxr.pin_position.split(',') : ['0','0']
+        },
+        // Offset x
+        ox() {
+            if (this.pin_pos.length !== 2) return undefined
+            let x = this.parse_coord(this.pin_pos[0], this.w)
+            return -x
+        },
+        // Offset y
+        oy() {
+            if (this.pin_pos.length !== 2) return undefined
+            let y = this.parse_coord(this.pin_pos[1], this.h)
+            return -y
+        },
+        z_index() {
+            let base_index = this.settings['z-index'] ||
+                this.settings['zIndex']  || 0
+            let ux_index = this.uxr['z_index'] || 0
+            return base_index + ux_index
+        },
+        background() {
+            let c = this.uxr.background || this.$props.colors.back
+            return Utils.apply_opacity(c,
+                this.uxr.background_opacity ||
+                this.$props.config.UX_OPACITY
+            )
+        },
+        inactive_btn_color() {
+            return this.uxr.inactive_btn_color ||
+                this.$props.colors.grid
+        },
+        wrapper() {
+            return {
+                x: this.x,
+                y: this.y,
+                pin_x: this.x - this.ox,
+                pin_y: this.y - this.oy
+            }
+        }
+    },
+    watch: {
+        updater() {
+            this.update_position()
+        }
+    },
     mounted() {
         this.self = document.getElementById(this.uuid)
         this.w = this.self.offsetWidth // TODO: => width: "content"
@@ -143,107 +244,6 @@ export default {
                 event: 'close-interface',
                 args: [this.$props.ux.uuid]
             })
-        }
-    },
-    computed: {
-        uxr() {
-            return this.$props.ux // just a ref
-        },
-        layout() {
-            return this.$props.ux.overlay.layout
-        },
-        settings() {
-            return this.$props.ux.overlay.settings
-        },
-        uuid() {
-            return `tvjs-ux-wrapper-${this.uxr.uuid}`
-        },
-        mouse() {
-            return this.uxr.overlay.mouse
-        },
-        style() {
-            let st = {
-                'display': this.uxr.hidden ? 'none' : undefined,
-                'left': `${this.x}px`,
-                'top': `${this.y}px`,
-                'pointer-events': this.uxr.pointer_events || 'all',
-                'z-index': this.z_index
-            }
-            if (this.uxr.win_styling !== false)
-                st = Object.assign(st, {
-                    'border': `1px solid ${this.$props.colors.grid}`,
-                    'border-radius': '3px',
-                    'background': `${this.background}`,
-                })
-            return st
-        },
-        pin_style() {
-            return {
-                'left': `${ -this.ox }px`,
-                'top': `${ -this.oy }px`,
-                'background-color': this.uxr.pin_color
-            }
-        },
-        btn_style() {
-            return {
-                'background': `${this.inactive_btn_color}`,
-                'color': `${this.inactive_btn_color}`,
-            }
-        },
-        pin_pos() {
-            return this.uxr.pin_position ?
-                this.uxr.pin_position.split(',') : ['0','0']
-        },
-        // Offset x
-        ox() {
-            if (this.pin_pos.length !== 2) return undefined
-            let x = this.parse_coord(this.pin_pos[0], this.w)
-            return -x
-        },
-        // Offset y
-        oy() {
-            if (this.pin_pos.length !== 2) return undefined
-            let y = this.parse_coord(this.pin_pos[1], this.h)
-            return -y
-        },
-        z_index() {
-            let base_index = this.settings['z-index'] ||
-                this.settings['zIndex']  || 0
-            let ux_index = this.uxr['z_index'] || 0
-            return base_index + ux_index
-        },
-        background() {
-            let c = this.uxr.background || this.$props.colors.back
-            return Utils.apply_opacity(c,
-                this.uxr.background_opacity ||
-                this.$props.config.UX_OPACITY
-            )
-        },
-        inactive_btn_color() {
-            return this.uxr.inactive_btn_color ||
-                this.$props.colors.grid
-        },
-        wrapper() {
-            return {
-                x: this.x,
-                y: this.y,
-                pin_x: this.x - this.ox,
-                pin_y: this.y - this.oy
-            }
-        }
-    },
-    watch: {
-        updater() {
-            this.update_position()
-        }
-    },
-    data() {
-        return {
-            x: 0,
-            y: 0,
-            w: 0,
-            h: 0,
-            visible: true
         }
     }
 }

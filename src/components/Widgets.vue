@@ -2,14 +2,14 @@
     <!-- WidgetS Layer -->
     <div class="tvjs-widgets"
         :style="{width: width+'px', height: height+'px'}">
-        <component v-for="id in Object.keys(map)"
-            :key="id"
+        <component :is="initw(id)"
+            v-for="id in Object.keys(map)"
             :id="id"
+            :key="id"
             :main="map[id].ctrl"
             :data="map[id].data"
             :tv="tv"
-            :dc="dc"
-            v-bind:is="initw(id)">
+            :dc="dc">
         </component>
     </div>
 </template>

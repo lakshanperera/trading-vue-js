@@ -12,22 +12,9 @@ import Data from '../data/data.json'
 import DataCube from '../src/helpers/datacube.js'
 
 export default {
-    name: 'app',
+    name: 'App',
     components: {
         TradingVue
-    },
-    methods: {
-        onResize() {
-            this.width = window.innerWidth
-            this.height = window.innerHeight
-        }
-    },
-    mounted() {
-        window.addEventListener('resize', this.onResize)
-        window.dc = this.chart
-    },
-    beforeDestroy() {
-        window.removeEventListener('resize', this.onResize)
     },
     data() {
         return {
@@ -40,6 +27,19 @@ export default {
                 colorText: '#333',
             }
         };
+    },
+    mounted() {
+        window.addEventListener('resize', this.onResize)
+        window.dc = this.chart
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.onResize)
+    },
+    methods: {
+        onResize() {
+            this.width = window.innerWidth
+            this.height = window.innerHeight
+        }
     }
 };
 </script>

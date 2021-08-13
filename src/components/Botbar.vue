@@ -6,12 +6,31 @@ import Canvas from '../mixins/canvas.js'
 
 export default {
     name: 'Botbar',
+    mixins: [Canvas],
     props: [
         'sub', 'layout', 'range', 'interval', 'cursor', 'colors', 'font',
         'width', 'height', 'rerender', 'tv_id', 'config', 'shaders',
         'timezone'
     ],
-    mixins: [Canvas],
+    computed: {
+        bot_shaders() {
+            return this.$props.shaders
+                .filter(x => x.target === 'botbar')
+        }
+    },
+    watch: {
+        range: {
+            handler: function() { this.redraw() },
+            deep: true
+        },
+        cursor: {
+            handler: function() { this.redraw() },
+            deep: true
+        },
+        rerender() {
+            this.$nextTick(() => this.redraw())
+        }
+    },
     mounted() {
         const el = this.$refs['canvas']
         this.renderer = new Botbar(el, this)
@@ -34,25 +53,6 @@ export default {
                 backgroundColor: this.$props.colors.back
             },
         })
-    },
-    computed: {
-        bot_shaders() {
-            return this.$props.shaders
-                .filter(x => x.target === 'botbar')
-        }
-    },
-    watch: {
-        range: {
-            handler: function() { this.redraw() },
-            deep: true
-        },
-        cursor: {
-            handler: function() { this.redraw() },
-            deep: true
-        },
-        rerender() {
-            this.$nextTick(() => this.redraw())
-        }
     }
 }
 

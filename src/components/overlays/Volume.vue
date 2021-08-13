@@ -8,6 +8,37 @@ import Volbar from '../primitives/volbar.js'
 export default {
     name: 'Volume',
     mixins: [Overlay],
+    data() {
+        return {}
+    },
+
+    // Define internal setting & constants here
+    computed: {
+        sett() {
+            return this.$props.settings
+        },
+        colorVolUp() {
+            return this.sett.colorVolUp ||
+            this.$props.colors.volUp
+        },
+        colorVolDw() {
+            return this.sett.colorVolDw ||
+            this.$props.colors.volDw
+        },
+        colorVolUpLegend() {
+            return this.sett.colorVolUpLegend ||
+            this.$props.colors.candleUp
+        },
+        colorVolDwLegend() {
+            return this.sett.colorVolDwLegend ||
+            this.$props.colors.candleDw
+        },
+        volscale() {
+            return this.sett.volscale ||
+            this.$props.grid_id > 0 ? 0.85 :
+            this.$props.config.VOLSCALE
+        }
+    },
     methods: {
         meta_info() {
             return { author: 'C451', version: '1.1.0' }
@@ -54,37 +85,6 @@ export default {
                 return [hi, lo]
             }
         }
-    },
-
-    // Define internal setting & constants here
-    computed: {
-        sett() {
-            return this.$props.settings
-        },
-        colorVolUp() {
-            return this.sett.colorVolUp ||
-            this.$props.colors.volUp
-        },
-        colorVolDw() {
-            return this.sett.colorVolDw ||
-            this.$props.colors.volDw
-        },
-        colorVolUpLegend() {
-            return this.sett.colorVolUpLegend ||
-            this.$props.colors.candleUp
-        },
-        colorVolDwLegend() {
-            return this.sett.colorVolDwLegend ||
-            this.$props.colors.candleDw
-        },
-        volscale() {
-            return this.sett.volscale ||
-            this.$props.grid_id > 0 ? 0.85 :
-            this.$props.config.VOLSCALE
-        }
-    },
-    data() {
-        return {}
     }
 
 }

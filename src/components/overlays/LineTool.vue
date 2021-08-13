@@ -13,6 +13,27 @@ import Ray from '../primitives/ray.js'
 export default {
     name: 'LineTool',
     mixins: [Overlay, Tool],
+    data() {
+        return {}
+    },
+    // Define internal setting & constants here
+    computed: {
+        sett() {
+            return this.$props.settings
+        },
+        p1() {
+            return this.$props.settings.p1
+        },
+        p2() {
+            return this.$props.settings.p2
+        },
+        line_width() {
+            return this.sett.lineWidth || 0.9
+        },
+        color() {
+            return this.sett.color || '#42b28a'
+        }
+    },
     methods: {
         meta_info() {
             return { author: 'C451', version: '1.1.0' }
@@ -76,27 +97,6 @@ export default {
         },
         use_for() { return ['LineTool'] },
         data_colors() { return [this.color] }
-    },
-    // Define internal setting & constants here
-    computed: {
-        sett() {
-            return this.$props.settings
-        },
-        p1() {
-            return this.$props.settings.p1
-        },
-        p2() {
-            return this.$props.settings.p2
-        },
-        line_width() {
-            return this.sett.lineWidth || 0.9
-        },
-        color() {
-            return this.sett.color || '#42b28a'
-        }
-    },
-    data() {
-        return {}
     }
 
 }

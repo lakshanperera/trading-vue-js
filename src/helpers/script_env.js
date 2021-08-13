@@ -95,13 +95,13 @@ export default class ScriptEnv {
     make_box(src) {
 
         let proto = Object.getPrototypeOf(this.std)
-        let std = ``
+        let std = ''
         for (var k of Object.getOwnPropertyNames(proto)) {
             if (k === 'constructor') continue
             std += `const std_${k} = self.std.${k}.bind(self.std)\n`
         }
 
-        let props = ``
+        let props = ''
         for (var k in src.props || {}) {
             if (src.props[k].val !== undefined) {
                 var val = src.props[k].val
@@ -114,7 +114,7 @@ export default class ScriptEnv {
         }
         // TODO: add argument values to _id
 
-        let tss = ``
+        let tss = ''
         for (var k in this.shared) {
             if (this.shared[k] && this.shared[k].__id__) {
                 tss += `const ${k} = shared.${k}\n`
@@ -122,7 +122,7 @@ export default class ScriptEnv {
         }
 
         // Datasets
-        let dss = ``
+        let dss = ''
         for (var k in src.data || {}) {
             let id = se.match_ds(this.id, src.data[k].type)
             if (!this.shared.dss[id]) {
@@ -185,7 +185,7 @@ export default class ScriptEnv {
 
     // Make definitions for modules
     make_modules() {
-        let s = ``
+        let s = ''
         for (var id in se.mods) {
             if (!se.mods[id].api) continue
             s += `const ${id} = se.mods['${id}'].api[self.id]`
@@ -301,7 +301,7 @@ export default class ScriptEnv {
             if (str[i] === ')') c--
             if (str[i] === '[') s++
             if (str[i] === ']') s--
-            if (str[i] === "'") q1 = !q1
+            if (str[i] === '\'') q1 = !q1
             if (str[i] === '"') q2 = !q2
             if (str[i] === '`') q3 = !q3
             if (str[i] === ',' && c === 1 && !s && !q1 && !q2 && !q3) {

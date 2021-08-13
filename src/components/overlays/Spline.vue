@@ -9,6 +9,35 @@ import Overlay from '../../mixins/overlay.js'
 export default {
     name: 'Spline',
     mixins: [Overlay],
+    data() {
+        return {
+            COLORS:
+            [
+                '#42b28a', '#5691ce', '#612ff9',
+                '#d50b90', '#ff2316'
+            ]
+        }
+    },
+    // Define internal setting & constants here
+    computed: {
+        sett() {
+            return this.$props.settings
+        },
+        line_width() {
+            return this.sett.lineWidth || 0.75
+        },
+        color() {
+            const n = this.$props.num % 5
+            return this.sett.color || this.COLORS[n]
+        },
+        data_index() {
+            return this.sett.dataIndex || 1
+        },
+        // Don't connect separate parts if true
+        skip_nan() {
+            return this.sett.skipNaN
+        }
+    },
     methods: {
         meta_info() {
             return { author: 'C451', version: '1.1.2' }
@@ -77,35 +106,6 @@ export default {
         // Colors for the legend, should have the
         // same dimention as a data point (excl. timestamp)
         data_colors() { return [this.color] }
-    },
-    // Define internal setting & constants here
-    computed: {
-        sett() {
-            return this.$props.settings
-        },
-        line_width() {
-            return this.sett.lineWidth || 0.75
-        },
-        color() {
-            const n = this.$props.num % 5
-            return this.sett.color || this.COLORS[n]
-        },
-        data_index() {
-            return this.sett.dataIndex || 1
-        },
-        // Don't connect separate parts if true
-        skip_nan() {
-            return this.sett.skipNaN
-        }
-    },
-    data() {
-        return {
-            COLORS:
-            [
-                '#42b28a', '#5691ce', '#612ff9',
-                '#d50b90', '#ff2316'
-            ]
-        }
     }
 
 }

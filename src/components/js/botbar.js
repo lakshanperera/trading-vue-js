@@ -121,7 +121,7 @@ export default class Botbar {
 
         let h = Utils.add_zero(d.getUTCHours())
         let m = Utils.add_zero(d.getUTCMinutes())
-        return h + ":" + m
+        return h + ':' + m
 
     }
 
@@ -153,7 +153,7 @@ export default class Botbar {
         if (ti < DAY) {
             let h = Utils.add_zero(d.getUTCHours())
             let m = Utils.add_zero(d.getUTCMinutes())
-            time = h + ":" + m
+            time = h + ':' + m
         }
 
         return `${date}  ${time}`

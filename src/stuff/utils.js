@@ -10,7 +10,7 @@ export default {
 
     add_zero(i) {
         if (i < 10) {
-            i = "0" + i;
+            i = '0' + i;
         }
         return i
     },
@@ -124,7 +124,7 @@ export default {
     fast_filter(arr, t1, t2) {
         if (!arr.length) return [arr, undefined]
         try {
-            let ia = new IndexedArray(arr, "0")
+            let ia = new IndexedArray(arr, '0')
             let res = ia.getRange(t1, t2)
             let i0 = ia.valpos[t1].next
             return [res, i0]
@@ -149,7 +149,7 @@ export default {
 
     // Nearest indexes (left and right)
     fast_nearest(arr, t1) {
-        let ia = new IndexedArray(arr, "0")
+        let ia = new IndexedArray(arr, '0')
         ia.fetch(t1)
         return [ia.nextlow, ia.nexthigh]
     },
@@ -233,7 +233,7 @@ export default {
             let el = doc.getElementById(id)
             if (!el) {
                 let base = doc.getElementById(tv_id)
-                el = doc.createElement("div")
+                el = doc.createElement('div')
                 el.id = id
                 el.style.position = 'absolute'
                 el.style.top = '-1000px'

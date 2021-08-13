@@ -6,17 +6,33 @@ import Canvas from '../mixins/canvas.js'
 
 export default {
     name: 'Sidebar',
+    mixins: [Canvas],
     props: [
         'sub', 'layout', 'range', 'interval', 'cursor', 'colors', 'font',
         'width', 'height', 'grid_id', 'rerender', 'y_transform', 'tv_id',
         'config', 'shaders'
     ],
-    mixins: [Canvas],
+    watch: {
+        range: {
+            handler: function() { this.redraw() },
+            deep: true
+        },
+        cursor: {
+            handler: function() { this.redraw() },
+            deep: true
+        },
+        rerender() {
+            this.$nextTick(() => this.redraw())
+        }
+    },
     mounted() {
         const el = this.$refs['canvas']
         this.renderer = new Sidebar(el, this)
         this.setup()
         this.redraw()
+    },
+    beforeDestroy () {
+        if(this.renderer) this.renderer.destroy()
     },
     render(h) {
         const id = this.$props.grid_id
@@ -35,22 +51,6 @@ export default {
                 backgroundColor: this.$props.colors.back
             },
         })
-    },
-    watch: {
-        range: {
-            handler: function() { this.redraw() },
-            deep: true
-        },
-        cursor: {
-            handler: function() { this.redraw() },
-            deep: true
-        },
-        rerender() {
-            this.$nextTick(() => this.redraw())
-        }
-    },
-    beforeDestroy () {
-        if(this.renderer) this.renderer.destroy()
     }
 }
 

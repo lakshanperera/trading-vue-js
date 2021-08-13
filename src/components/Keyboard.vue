@@ -17,7 +17,6 @@ export default {
         window.removeEventListener('keyup', this.keyup)
         window.removeEventListener('keypress', this.keypress)
     },
-    render(h) { return h() },
     methods: {
         keydown (event) {
             for (var id in this._listeners) {
@@ -55,7 +54,8 @@ export default {
         remove(listener) {
             delete this._listeners[listener.id]
         },
-    }
+    },
+    render(h) { return h() }
 }
 
 </script>

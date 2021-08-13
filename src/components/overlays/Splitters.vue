@@ -7,6 +7,34 @@ import Overlay from '../../mixins/overlay.js'
 export default {
     name: 'Splitters',
     mixins: [Overlay],
+    data() {
+        return {}
+    },
+    // Define internal setting & constants here
+    computed: {
+        sett() {
+            return this.$props.settings
+        },
+        new_font() {
+            return this.sett.font ||
+            '12px ' + this.$props.font.split('px').pop()
+        },
+        flag_color() {
+            return this.sett.flagColor || '#4285f4'
+        },
+        label_color() {
+            return this.sett.labelColor || '#fff'
+        },
+        line_color() {
+            return this.sett.lineColor || '#4285f4'
+        },
+        line_width() {
+            return this.sett.lineWidth || 1.0
+        },
+        y_position() {
+            return this.sett.yPosition || 0.9
+        }
+    },
     methods: {
         meta_info() {
             return { author: 'C451', version: '1.0.1' }
@@ -57,34 +85,6 @@ export default {
         },
         use_for() { return ['Splitters'] }
 
-    },
-    // Define internal setting & constants here
-    computed: {
-        sett() {
-            return this.$props.settings
-        },
-        new_font() {
-            return this.sett.font ||
-            '12px ' + this.$props.font.split('px').pop()
-        },
-        flag_color() {
-            return this.sett.flagColor || '#4285f4'
-        },
-        label_color() {
-            return this.sett.labelColor || '#fff'
-        },
-        line_color() {
-            return this.sett.lineColor || '#4285f4'
-        },
-        line_width() {
-            return this.sett.lineWidth || 1.0
-        },
-        y_position() {
-            return this.sett.yPosition || 0.9
-        }
-    },
-    data() {
-        return {}
     }
 }
 

@@ -7,6 +7,24 @@ import Overlay from '../../mixins/overlay.js'
 export default {
     name: 'Range',
     mixins: [Overlay],
+    // Define internal setting & constants here
+    computed: {
+        sett() {
+            return this.$props.settings
+        },
+        line_width() {
+            return this.sett.lineWidth || 0.75
+        },
+        color() {
+            return this.sett.color || '#ec206e'
+        },
+        band_color() {
+            return this.sett.bandColor || '#ddd'
+        },
+        back_color() {
+            return this.sett.backColor || '#381e9c16'
+        }
+    },
     methods: {
         meta_info() {
             return { author: 'C451', version: '1.0.1' }
@@ -91,24 +109,6 @@ export default {
                 Math.max(hi, this.sett.upper || 70),
                 Math.min(lo, this.sett.lower || 30)
             ]
-        }
-    },
-    // Define internal setting & constants here
-    computed: {
-        sett() {
-            return this.$props.settings
-        },
-        line_width() {
-            return this.sett.lineWidth || 0.75
-        },
-        color() {
-            return this.sett.color || '#ec206e'
-        },
-        band_color() {
-            return this.sett.bandColor || '#ddd'
-        },
-        back_color() {
-            return this.sett.backColor || '#381e9c16'
         }
     }
 

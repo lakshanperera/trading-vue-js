@@ -15,7 +15,7 @@ export default class Mouse {
 
     // You can choose where to place the handler
     // (beginning or end of the queue)
-    on(name, handler, dir = "unshift") {
+    on(name, handler, dir = 'unshift') {
         if (!handler) return
         this.map[name] = this.map[name] || []
         this.map[name][dir](handler)

@@ -1,6 +1,6 @@
 <template>
-    <img class="t-vue-lbtn" :src="base64"
-        :id="uuid" :style="{
+    <img :id="uuid" class="t-vue-lbtn"
+        :src="base64" :style="{
             width: config.L_BTN_SIZE + 'px',
             height: config.L_BTN_SIZE + 'px',
             margin: config.L_BTN_MARGIN
@@ -15,8 +15,6 @@ export default {
     name: 'LegendButton',
     props: ['id', 'tv_id', 'grid_id', 'ov_id', 'index', 'display',
             'icon', 'config'],
-    mounted() {
-    },
     computed: {
         base64() {
             return this.icon || Icons[this.file_name]
@@ -36,11 +34,13 @@ export default {
         },
         data_type() {
             return this.$props.grid_id === 0 ?
-                "onchart" : "offchart"
+                'onchart' : 'offchart'
         },
         data_index() {
             return this.$props.index
         }
+    },
+    mounted() {
     },
     methods: {
         onclick() {

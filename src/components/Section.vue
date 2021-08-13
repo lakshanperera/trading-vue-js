@@ -2,30 +2,30 @@
     <!-- Horizontal section: (grid + sidebar) -->
     <div class="trading-vue-section">
         <chart-legend ref="legend"
-            v-bind:values="section_values"
-            v-bind:grid_id="grid_id"
-            v-bind:common="legend_props"
-            v-bind:meta_props="get_meta_props"
-            v-on:legend-button-click="button_click">
+            :values="section_values"
+            :grid_id="grid_id"
+            :common="legend_props"
+            :meta_props="get_meta_props"
+            @legend-button-click="button_click">
         </chart-legend>
         <grid v-bind="grid_props" ref="grid"
-            v-bind:grid_id="grid_id"
-             v-on:register-kb-listener="register_kb"
-             v-on:remove-kb-listener="remove_kb"
-             v-on:range-changed="range_changed"
-             v-on:cursor-changed="cursor_changed"
-             v-on:cursor-locked="cursor_locked"
-             v-on:layer-meta-props="emit_meta_props"
-             v-on:custom-event="emit_custom_event"
-             v-on:sidebar-transform="sidebar_transform"
-             v-on:rezoom-range="rezoom_range">
+            :grid_id="grid_id"
+             @register-kb-listener="register_kb"
+             @remove-kb-listener="remove_kb"
+             @range-changed="range_changed"
+             @cursor-changed="cursor_changed"
+             @cursor-locked="cursor_locked"
+             @layer-meta-props="emit_meta_props"
+             @custom-event="emit_custom_event"
+             @sidebar-transform="sidebar_transform"
+             @rezoom-range="rezoom_range">
         </grid>
         <sidebar
             :ref="'sb-' + grid_id"
             v-bind="sidebar_props"
-            v-bind:grid_id="grid_id"
-            v-bind:rerender="rerender"
-            v-on:sidebar-transform="sidebar_transform">
+            :grid_id="grid_id"
+            :rerender="rerender"
+            @sidebar-transform="sidebar_transform">
         </sidebar>
     </div>
 </template>
@@ -39,59 +39,18 @@ import Shaders from '../mixins/shaders.js'
 
 export default {
     name: 'GridSection',
-    props: ['common', 'grid_id'],
-    mixins: [Shaders],
     components: {
         Grid,
         Sidebar,
         ChartLegend
     },
-    mounted() {
-        this.init_shaders(this.$props.common.skin)
-    },
-    methods: {
-        range_changed(r) {
-            this.$emit('range-changed', r)
-        },
-        cursor_changed(c) {
-            c.grid_id = this.$props.grid_id
-            this.$emit('cursor-changed', c)
-        },
-        cursor_locked(state) {
-            this.$emit('cursor-locked', state)
-        },
-        sidebar_transform(s) {
-            this.$emit('sidebar-transform', s)
-        },
-        emit_meta_props(d) {
-            this.$set(this.meta_props, d.layer_id, d)
-            this.$emit('layer-meta-props', d)
-        },
-        emit_custom_event(d) {
-            this.on_shader_event(d, 'sidebar')
-            this.$emit('custom-event', d)
-        },
-        button_click(event) {
-            this.$emit('legend-button-click', event)
-        },
-        register_kb(event) {
-            this.$emit('register-kb-listener', event)
-        },
-        remove_kb(event) {
-            this.$emit('remove-kb-listener', event)
-        },
-        rezoom_range(event) {
-            let id = 'sb-' + event.grid_id
-            if (this.$refs[id]) {
-                this.$refs[id].renderer.rezoom_range(
-                    event.z, event.diff1, event.diff2
-                )
-            }
-        },
-        ghash(val) {
-            // Measures grid heights configuration
-            let hs = val.layout.grids.map(x => x.height)
-            return hs.reduce((a, b) => a + b, '')
+    mixins: [Shaders],
+    props: ['common', 'grid_id'],
+    data() {
+        return {
+            meta_props: {},
+            rerender: 0,
+            last_ghash: ''
         }
     },
     computed: {
@@ -172,11 +131,52 @@ export default {
             deep: true
         }
     },
-    data() {
-        return {
-            meta_props: {},
-            rerender: 0,
-            last_ghash: ''
+    mounted() {
+        this.init_shaders(this.$props.common.skin)
+    },
+    methods: {
+        range_changed(r) {
+            this.$emit('range-changed', r)
+        },
+        cursor_changed(c) {
+            c.grid_id = this.$props.grid_id
+            this.$emit('cursor-changed', c)
+        },
+        cursor_locked(state) {
+            this.$emit('cursor-locked', state)
+        },
+        sidebar_transform(s) {
+            this.$emit('sidebar-transform', s)
+        },
+        emit_meta_props(d) {
+            this.$set(this.meta_props, d.layer_id, d)
+            this.$emit('layer-meta-props', d)
+        },
+        emit_custom_event(d) {
+            this.on_shader_event(d, 'sidebar')
+            this.$emit('custom-event', d)
+        },
+        button_click(event) {
+            this.$emit('legend-button-click', event)
+        },
+        register_kb(event) {
+            this.$emit('register-kb-listener', event)
+        },
+        remove_kb(event) {
+            this.$emit('remove-kb-listener', event)
+        },
+        rezoom_range(event) {
+            let id = 'sb-' + event.grid_id
+            if (this.$refs[id]) {
+                this.$refs[id].renderer.rezoom_range(
+                    event.z, event.diff1, event.diff2
+                )
+            }
+        },
+        ghash(val) {
+            // Measures grid heights configuration
+            let hs = val.layout.grids.map(x => x.height)
+            return hs.reduce((a, b) => a + b, '')
         }
     }
 }

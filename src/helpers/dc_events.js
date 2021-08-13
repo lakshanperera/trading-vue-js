@@ -198,7 +198,7 @@ export default class DCEvents {
                     // TODO: add support of info / errors to the legend
                     console.error(
                         `Overlay ${obj.id}: script prop '${k}' ` +
-                        `doesn't have a default value`)
+                        'doesn\'t have a default value')
                     return
                 }
                 s[k] = proto.val = proto.def // set the default
@@ -324,8 +324,8 @@ export default class DCEvents {
                 this.build_tool(args[0])
             } else {
                 this.tv.showTheTip(
-                    `<b>Hodl</b>+<b>Drug</b> to create, ` +
-                    `<b>Tap</b> to finish a tool`
+                    '<b>Hodl</b>+<b>Drug</b> to create, ' +
+                    '<b>Tap</b> to finish a tool'
                 )
             }
         } else if (this.sett.shift_measure && args[1].shiftKey) {

@@ -5,6 +5,33 @@ import Overlay from '../../mixins/overlay.js'
 export default {
     name: 'Trades',
     mixins: [Overlay],
+    // Define internal setting & constants here
+    computed: {
+        sett() {
+            return this.$props.settings
+        },
+        default_font() {
+            return '12px ' + this.$props.font.split('px').pop()
+        },
+        buy_color() {
+            return this.sett.buyColor || '#63df89'
+        },
+        sell_color() {
+            return this.sett.sellColor || '#ec4662'
+        },
+        label_color() {
+            return this.sett.labelColor || '#999'
+        },
+        marker_size() {
+            return this.sett.markerSize || 5
+        },
+        show_label() {
+            return this.sett.showLabel !== false
+        },
+        new_font() {
+            return this.sett.font || this.default_font
+        }
+    },
     methods: {
         meta_info() {
             return { author: 'C451', version: '1.0.2' }
@@ -68,33 +95,6 @@ export default {
         }
 
 
-    },
-    // Define internal setting & constants here
-    computed: {
-        sett() {
-            return this.$props.settings
-        },
-        default_font() {
-            return '12px ' + this.$props.font.split('px').pop()
-        },
-        buy_color() {
-            return this.sett.buyColor || '#63df89'
-        },
-        sell_color() {
-            return this.sett.sellColor || '#ec4662'
-        },
-        label_color() {
-            return this.sett.labelColor || '#999'
-        },
-        marker_size() {
-            return this.sett.markerSize || 5
-        },
-        show_label() {
-            return this.sett.showLabel !== false
-        },
-        new_font() {
-            return this.sett.font || this.default_font
-        }
     }
 }
 </script>

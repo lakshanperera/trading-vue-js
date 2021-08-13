@@ -6,6 +6,34 @@ import Overlay from '../../mixins/overlay.js'
 export default {
     name: 'Segment',
     mixins: [Overlay],
+    data() {
+        return {
+            COLORS:
+            [
+                '#42b28a', '#5691ce', '#612ff9',
+                '#d50b90', '#ff2316'
+            ]
+        }
+    },
+    // Define internal setting & constants here
+    computed: {
+        sett() {
+            return this.$props.settings
+        },
+        p1() {
+            return this.$props.settings.p1
+        },
+        p2() {
+            return this.$props.settings.p2
+        },
+        line_width() {
+            return this.sett.lineWidth || 0.9
+        },
+        color() {
+            const n = this.$props.num % 5
+            return this.sett.color || this.COLORS[n]
+        }
+    },
     methods: {
         meta_info() {
             return { author: 'C451', version: '1.0.0' }
@@ -32,34 +60,6 @@ export default {
         },
         use_for() { return ['Segment'] },
         data_colors() { return [this.color] }
-    },
-    // Define internal setting & constants here
-    computed: {
-        sett() {
-            return this.$props.settings
-        },
-        p1() {
-            return this.$props.settings.p1
-        },
-        p2() {
-            return this.$props.settings.p2
-        },
-        line_width() {
-            return this.sett.lineWidth || 0.9
-        },
-        color() {
-            const n = this.$props.num % 5
-            return this.sett.color || this.COLORS[n]
-        }
-    },
-    data() {
-        return {
-            COLORS:
-            [
-                '#42b28a', '#5691ce', '#612ff9',
-                '#d50b90', '#ff2316'
-            ]
-        }
     }
 
 }

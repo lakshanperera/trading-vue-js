@@ -7,6 +7,34 @@ import Overlay from '../../mixins/overlay.js'
 export default {
     name: 'Channel',
     mixins: [Overlay],
+    data() {
+        return {
+            COLORS:
+            [
+                '#42b28a', '#5691ce', '#612ff9',
+                '#d50b90', '#ff2316'
+            ]
+        }
+    },
+    // Define internal setting & constants here
+    computed: {
+        sett() {
+            return this.$props.settings
+        },
+        line_width() {
+            return this.sett.lineWidth || 0.75
+        },
+        color() {
+            const n = this.$props.num % 5
+            return this.sett.color || this.COLORS[n]
+        },
+        show_mid() {
+            return 'showMid' in this.sett ? this.sett.showMid : true
+        },
+        back_color() {
+            return this.sett.backColor || this.color + '11'
+        }
+    },
     methods: {
         meta_info() {
             return { author: 'C451', version: '1.0.1' }
@@ -113,34 +141,6 @@ export default {
         },
         use_for() { return ['Channel', 'KC', 'BB'] },
         data_colors() { return [this.color, this.color, this.color] }
-    },
-    // Define internal setting & constants here
-    computed: {
-        sett() {
-            return this.$props.settings
-        },
-        line_width() {
-            return this.sett.lineWidth || 0.75
-        },
-        color() {
-            const n = this.$props.num % 5
-            return this.sett.color || this.COLORS[n]
-        },
-        show_mid() {
-            return 'showMid' in this.sett ? this.sett.showMid : true
-        },
-        back_color() {
-            return this.sett.backColor || this.color + '11'
-        }
-    },
-    data() {
-        return {
-            COLORS:
-            [
-                '#42b28a', '#5691ce', '#612ff9',
-                '#d50b90', '#ff2316'
-            ]
-        }
     }
 
 }

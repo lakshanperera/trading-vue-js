@@ -8,28 +8,112 @@ import Crosshair from './Crosshair.vue'
 import KeyboardListener from './KeyboardListener.vue'
 import UxLayer from './UxLayer.vue'
 
-import Spline from "./overlays/Spline.vue"
-import Splines from "./overlays/Splines.vue"
-import Range from "./overlays/Range.vue"
-import Trades from "./overlays/Trades.vue"
-import Channel from "./overlays/Channel.vue"
-import Segment from "./overlays/Segment.vue"
-import Candles from "./overlays/Candles.vue"
-import Volume from "./overlays/Volume.vue"
-import Splitters from "./overlays/Splitters.vue"
-import LineTool from "./overlays/LineTool.vue"
-import RangeTool from "./overlays/RangeTool.vue"
+import Spline from './overlays/Spline.vue'
+import Splines from './overlays/Splines.vue'
+import Range from './overlays/Range.vue'
+import Trades from './overlays/Trades.vue'
+import Channel from './overlays/Channel.vue'
+import Segment from './overlays/Segment.vue'
+import Candles from './overlays/Candles.vue'
+import Volume from './overlays/Volume.vue'
+import Splitters from './overlays/Splitters.vue'
+import LineTool from './overlays/LineTool.vue'
+import RangeTool from './overlays/RangeTool.vue'
 
 
 export default {
     name: 'Grid',
+    components: { Crosshair, KeyboardListener },
+    mixins: [Canvas, UxList],
     props: [
         'sub', 'layout', 'range', 'interval', 'cursor', 'colors', 'overlays',
         'width', 'height', 'data', 'grid_id', 'y_transform', 'font', 'tv_id',
         'config', 'meta', 'shaders'
     ],
-    mixins: [Canvas, UxList],
-    components: { Crosshair, KeyboardListener },
+    data() {
+        return {
+            layer_events: {
+                'new-grid-layer': this.new_layer,
+                'delete-grid-layer': this.del_layer,
+                'show-grid-layer': d => {
+                    this.renderer.show_hide_layer(d)
+                    this.redraw()
+                },
+                'redraw-grid': this.redraw,
+                'layer-meta-props': d => this.$emit('layer-meta-props', d),
+                'custom-event': d => this.$emit('custom-event', d)
+            },
+            keyboard_events: {
+                'register-kb-listener': event => {
+                    this.$emit('register-kb-listener', event)
+                },
+                'remove-kb-listener': event => {
+                    this.$emit('remove-kb-listener', event)
+                },
+                'keyup': event => {
+                    if (!this.is_active) return
+                    this.renderer.propagate('keyup', event)
+                },
+                'keydown': event => {
+                    if (!this.is_active) return // TODO: is this neeeded?
+                    this.renderer.propagate('keydown', event)
+                },
+                'keypress': event => {
+                    if (!this.is_active) return
+                    this.renderer.propagate('keypress', event)
+                },
+            }
+        }
+    },
+    computed: {
+        is_active() {
+            return this.$props.cursor.t !== undefined &&
+            this.$props.cursor.grid_id === this.$props.grid_id
+        }
+    },
+    watch: {
+        range: {
+            handler: function() {
+                // TODO: Left-side render lag fix:
+                // Overlay data is updated one tick later than
+                // the main sub. Fast fix is to delay redraw()
+                // call. It will be a solution until a better
+                // one comes by.
+                this.$nextTick(() => this.redraw())
+            },
+            deep: true
+        },
+        cursor: {
+            handler: function() {
+                if (!this.$props.cursor.locked) this.redraw()
+            },
+            deep: true
+        },
+        overlays: {
+            // Track changes in calc() functions
+            handler: function(ovs) {
+                for (var ov of ovs) {
+                    for (var comp of this.$children) {
+                        if (typeof comp.id !== 'string') continue
+                        let tuple = comp.id.split('_')
+                        tuple.pop()
+                        if (tuple.join('_') === ov.name) {
+                            comp.calc = ov.methods.calc
+                            if (!comp.calc) continue
+                            let calc = comp.calc.toString()
+                            if (calc !== ov.__prevscript__) {
+                                comp.exec_script()
+                            }
+                            ov.__prevscript__ = calc
+                        }
+                    }
+                }
+            },
+            deep: true
+        },
+        // Redraw on the shader list change
+        shaders(n, p) { this.redraw() }
+    },
     created() {
         // List of all possible overlays (builtin + custom)
         this._list = [
@@ -66,45 +150,6 @@ export default {
         this.setup()
         this.$nextTick(() => this.redraw())
 
-    },
-    render(h) {
-        const id = this.$props.grid_id
-        const layout = this.$props.layout.grids[id]
-        return this.create_canvas(h, `grid-${id}`, {
-            position: {
-                x: 0,
-                y: layout.offset || 0
-            },
-            attrs: {
-                width: layout.width,
-                height: layout.height,
-                overflow: 'hidden'
-            },
-            style: {
-                backgroundColor: this.$props.colors.back
-            },
-            hs: [
-                h(Crosshair, {
-                    props: this.common_props(),
-                    on: this.layer_events
-                }),
-                h(KeyboardListener, {
-                    on: this.keyboard_events
-                }),
-                h(UxLayer, {
-                    props: {
-                        id, tv_id: this.$props.tv_id,
-                        uxs: this.uxs,
-                        colors: this.$props.colors,
-                        config: this.$props.config,
-                        updater: Math.random()
-                    },
-                    on: {
-                        'custom-event': this.emit_ux_event
-                    }
-                })
-            ].concat(this.get_overlays(h))
-        })
     },
     methods: {
         new_layer(layer) {
@@ -196,89 +241,44 @@ export default {
             return comp
         }
     },
-    computed: {
-        is_active() {
-            return this.$props.cursor.t !== undefined &&
-            this.$props.cursor.grid_id === this.$props.grid_id
-        }
-    },
-    watch: {
-        range: {
-            handler: function() {
-                // TODO: Left-side render lag fix:
-                // Overlay data is updated one tick later than
-                // the main sub. Fast fix is to delay redraw()
-                // call. It will be a solution until a better
-                // one comes by.
-                this.$nextTick(() => this.redraw())
+    render(h) {
+        const id = this.$props.grid_id
+        const layout = this.$props.layout.grids[id]
+        return this.create_canvas(h, `grid-${id}`, {
+            position: {
+                x: 0,
+                y: layout.offset || 0
             },
-            deep: true
-        },
-        cursor: {
-            handler: function() {
-                if (!this.$props.cursor.locked) this.redraw()
+            attrs: {
+                width: layout.width,
+                height: layout.height,
+                overflow: 'hidden'
             },
-            deep: true
-        },
-        overlays: {
-            // Track changes in calc() functions
-            handler: function(ovs) {
-                for (var ov of ovs) {
-                    for (var comp of this.$children) {
-                        if (typeof comp.id !== 'string') continue
-                        let tuple = comp.id.split('_')
-                        tuple.pop()
-                        if (tuple.join('_') === ov.name) {
-                            comp.calc = ov.methods.calc
-                            if (!comp.calc) continue
-                            let calc = comp.calc.toString()
-                            if (calc !== ov.__prevscript__) {
-                                comp.exec_script()
-                            }
-                            ov.__prevscript__ = calc
-                        }
+            style: {
+                backgroundColor: this.$props.colors.back
+            },
+            hs: [
+                h(Crosshair, {
+                    props: this.common_props(),
+                    on: this.layer_events
+                }),
+                h(KeyboardListener, {
+                    on: this.keyboard_events
+                }),
+                h(UxLayer, {
+                    props: {
+                        id, tv_id: this.$props.tv_id,
+                        uxs: this.uxs,
+                        colors: this.$props.colors,
+                        config: this.$props.config,
+                        updater: Math.random()
+                    },
+                    on: {
+                        'custom-event': this.emit_ux_event
                     }
-                }
-            },
-            deep: true
-        },
-        // Redraw on the shader list change
-        shaders(n, p) { this.redraw() }
-    },
-    data() {
-        return {
-            layer_events: {
-                'new-grid-layer': this.new_layer,
-                'delete-grid-layer': this.del_layer,
-                'show-grid-layer': d => {
-                    this.renderer.show_hide_layer(d)
-                    this.redraw()
-                },
-                'redraw-grid': this.redraw,
-                'layer-meta-props': d => this.$emit('layer-meta-props', d),
-                'custom-event': d => this.$emit('custom-event', d)
-            },
-            keyboard_events: {
-                'register-kb-listener': event => {
-                    this.$emit('register-kb-listener', event)
-                },
-                'remove-kb-listener': event => {
-                    this.$emit('remove-kb-listener', event)
-                },
-                'keyup': event => {
-                    if (!this.is_active) return
-                    this.renderer.propagate('keyup', event)
-                },
-                'keydown': event => {
-                    if (!this.is_active) return // TODO: is this neeeded?
-                    this.renderer.propagate('keydown', event)
-                },
-                'keypress': event => {
-                    if (!this.is_active) return
-                    this.renderer.propagate('keypress', event)
-                },
-            }
-        }
+                })
+            ].concat(this.get_overlays(h))
+        })
     }
 }
 

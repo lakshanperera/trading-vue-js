@@ -145,9 +145,9 @@ export default class Grid {
         })
 
         let add = addEventListener
-        add("gesturestart", this.gesturestart)
-        add("gesturechange", this.gesturechange)
-        add("gestureend", this.gestureend)
+        add('gesturestart', this.gesturestart)
+        add('gesturechange', this.gesturechange)
+        add('gestureend', this.gestureend)
 
     }
 
@@ -539,9 +539,9 @@ export default class Grid {
 
     destroy() {
         let rm = removeEventListener
-        rm("gesturestart", this.gesturestart)
-        rm("gesturechange", this.gesturechange)
-        rm("gestureend", this.gestureend)
+        rm('gesturestart', this.gesturestart)
+        rm('gesturechange', this.gesturechange)
+        rm('gestureend', this.gestureend)
         if (this.mc) this.mc.destroy()
         if (this.hm) this.hm.unwheel()
     }

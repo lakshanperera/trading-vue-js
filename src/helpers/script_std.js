@@ -27,7 +27,7 @@ export default class ScriptStd {
     // That way we will know exact index ranges
     _index_tracking() {
         let proto = Object.getPrototypeOf(this)
-        let std = ``
+        let std = ''
         for (var k of Object.getOwnPropertyNames(proto)) {
             switch(k) {
                 case 'constructor':
@@ -196,7 +196,7 @@ export default class ScriptStd {
      */
     add(x, y, _id) {
         // __id__ means this is a time-series
-        let id = this._tsid(_id, `add`)
+        let id = this._tsid(_id, 'add')
         let x0 = this.na(x) ? NaN : (x.__id__ ? x[0] : x)
         let y0 = this.na(y) ? NaN : (y.__id__ ? y[0] : y)
         return this.ts(x0 + y0, id, x.__tf__)
@@ -208,7 +208,7 @@ export default class ScriptStd {
      * @return {TS} - New time-series
      */
     sub(x, y, _id) {
-        let id = this._tsid(_id, `sub`)
+        let id = this._tsid(_id, 'sub')
         let x0 = this.na(x) ? NaN : (x.__id__ ? x[0] : x)
         let y0 = this.na(y)? NaN : (y.__id__ ? y[0] : y)
         return this.ts(x0 - y0, id, x.__tf__)
@@ -220,7 +220,7 @@ export default class ScriptStd {
      * @return {TS} - New time-series
      */
     mult(x, y, _id) {
-        let id = this._tsid(_id, `mult`)
+        let id = this._tsid(_id, 'mult')
         let x0 = this.na(x) ? NaN : (x.__id__ ? x[0] : x)
         let y0 = this.na(y)? NaN : (y.__id__ ? y[0] : y)
         return this.ts(x0 * y0, id, x.__tf__)
@@ -232,7 +232,7 @@ export default class ScriptStd {
      * @return {TS} - New time-series
      */
     div(x, y, _id) {
-        let id = this._tsid(_id, `div`)
+        let id = this._tsid(_id, 'div')
         let x0 = this.na(x) ? NaN : (x.__id__ ? x[0] : x)
         let y0 = this.na(y)? NaN : (y.__id__ ? y[0] : y)
         return this.ts(x0 / y0, id, x.__tf__)
@@ -243,7 +243,7 @@ export default class ScriptStd {
      * @return {TS} - New time-series
      */
     neg(x, _id) {
-        let id = this._tsid(_id, `neg`)
+        let id = this._tsid(_id, 'neg')
         let x0 = this.na(x) ? NaN : (x.__id__ ? x[0] : x)
         return this.ts(-x0, id, x.__tf__)
     }
@@ -362,7 +362,7 @@ export default class ScriptStd {
      * @param {(boolean|TS)} cond - the condition
      */
     since(cond, _id) {
-        let id = this._tsid(_id, `since()`)
+        let id = this._tsid(_id, 'since()')
         if (cond && cond.__id__) cond = cond[0]
         let s = this.ts(undefined, id)
         s[0] = cond ? 0 : s[1] + 1
@@ -448,8 +448,8 @@ export default class ScriptStd {
         let id = this._tsid(_id, `cmo(${len})`)
         let mom = this.change(src, 1, id)
 
-        let g = this.ts(mom[0] >= 0 ? mom[0] : 0.0, id+"g", src.__tf__)
-        let l = this.ts(mom[0] >= 0 ? 0.0 : -mom[0], id+"l", src.__tf__)
+        let g = this.ts(mom[0] >= 0 ? mom[0] : 0.0, id+'g', src.__tf__)
+        let l = this.ts(mom[0] >= 0 ? 0.0 : -mom[0], id+'l', src.__tf__)
 
         let sm1 = this.sum(g, len, id+'1')[0]
         let sm2 = this.sum(l, len, id+'2')[0]
@@ -491,7 +491,7 @@ export default class ScriptStd {
      * @return {TS} - New time-series
      */
     cross(src1, src2, _id) {
-        let id = this._tsid(_id, `cross`)
+        let id = this._tsid(_id, 'cross')
         let x = (src1[0] > src2[0]) !== (src1[1] > src2[1])
         return this.ts(x, id, src1.__tf__)
     }
@@ -502,7 +502,7 @@ export default class ScriptStd {
      * @return {TS} - New time-series
      */
     crossover(src1, src2, _id) {
-        let id = this._tsid(_id, `crossover`)
+        let id = this._tsid(_id, 'crossover')
         let x = (src1[0] > src2[0]) && (src1[1] <= src2[1])
         return this.ts(x, id, src1.__tf__)
     }
@@ -513,7 +513,7 @@ export default class ScriptStd {
      * @return {TS} - New time-series
      */
     crossunder(src1, src2, _id) {
-        let id = this._tsid(_id, `crossunder`)
+        let id = this._tsid(_id, 'crossunder')
         let x = (src1[0] < src2[0]) && (src1[1] >= src2[1])
         return this.ts(x, id, src1.__tf__)
     }
@@ -523,7 +523,7 @@ export default class ScriptStd {
      * @return {TS} - New time-series
      */
     cum(src, _id) {
-        let id = this._tsid(_id, `cum`)
+        let id = this._tsid(_id, 'cum')
         let res = this.ts(0, id, src.__tf__)
         res[0] = this.nz(src[0]) + this.nz(res[1])
         return res
@@ -766,7 +766,7 @@ export default class ScriptStd {
      */
     kcw(src, len, mult, use_tr = true, _id, _tf) {
         let id = this._tsid(_id, `kcw(${len},${mult},${use_tr})`)
-        let kc = this.kc(src, len, mult, use_tr, `kcw`, _tf)
+        let kc = this.kc(src, len, mult, use_tr, 'kcw', _tf)
         return this.ts((kc[1][0] - kc[2][0]) / kc[0][0], id, src.__tf__)
     }
 
@@ -1178,7 +1178,7 @@ export default class ScriptStd {
     rsi(x, y, _id) {
         // Check if y is a timeseries
         if (!this.na(y) && y.__id__) {
-            var id = this._tsid(_id, `rsi(x,y)`)
+            var id = this._tsid(_id, 'rsi(x,y)')
             var rsi = 100 - 100 / (1 + this.div(x, y, id)[0])
         } else {
             var id = this._tsid(_id, `rsi(${y})`)
@@ -1413,7 +1413,7 @@ export default class ScriptStd {
      * @return {TS} - New time-series
      */
     swma(src, _id) {
-        let id = this._tsid(_id, `swma`)
+        let id = this._tsid(_id, 'swma')
         let sum = src[3] * this.SWMA[0] + src[2] * this.SWMA[1] +
                   src[1] * this.SWMA[2] + src[0] * this.SWMA[3]
         return this.ts(sum, id, src.__tf__)
@@ -1438,7 +1438,7 @@ export default class ScriptStd {
      * }
      */
     sym(x, y = {}, _id) {
-        let id = y.id || this._tsid(_id, `sym`)
+        let id = y.id || this._tsid(_id, 'sym')
         y.id = id
         if (this.env.syms[id]) {
             this.env.syms[id].update(x)

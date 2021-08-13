@@ -6,18 +6,6 @@ import Utils from '../stuff/utils.js'
 export default {
     name: 'Crosshair',
     props: [ 'cursor', 'colors', 'layout', 'sub' ],
-    methods: {
-        create() {
-            this.ch = new Crosshair(this)
-
-            // New grid overlay-renderer descriptor.
-            // Should implement draw() (see Spline.vue)
-            this.$emit('new-grid-layer', {
-                name: 'crosshair',
-                renderer: this.ch
-            })
-        }
-    },
     watch: {
         cursor: {
             handler: function() {
@@ -36,6 +24,18 @@ export default {
                 this.ch.visible = !explore
             },
             deep: true
+        }
+    },
+    methods: {
+        create() {
+            this.ch = new Crosshair(this)
+
+            // New grid overlay-renderer descriptor.
+            // Should implement draw() (see Spline.vue)
+            this.$emit('new-grid-layer', {
+                name: 'crosshair',
+                renderer: this.ch
+            })
         }
     },
     render(h) { return h() }

@@ -10,6 +10,53 @@ import Seg from '../primitives/seg.js'
 export default {
     name: 'RangeTool',
     mixins: [Overlay, Tool],
+    data() {
+        return {}
+    },
+    // Define internal setting & constants here
+    computed: {
+        sett() {
+            return this.$props.settings
+        },
+        p1() {
+            return this.$props.settings.p1
+        },
+        p2() {
+            return this.$props.settings.p2
+        },
+        line_width() {
+            return this.sett.lineWidth || 0.9
+        },
+        color() {
+            return this.sett.color ||
+                this.$props.colors.cross
+        },
+        back_color() {
+            return this.sett.backColor || '#9b9ba316'
+        },
+        value_back() {
+            return this.sett.valueBack || '#9b9ba316'
+        },
+        value_color() {
+            return this.sett.valueColor ||
+                this.$props.colors.text
+        },
+        prec() {
+            return this.sett.precision || 2
+        },
+        new_font() {
+            return '12px ' + this.$props.font.split('px').pop()
+        },
+        price() {
+            return 'price' in this.sett ? this.sett.price : true
+        },
+        time() {
+            return 'time' in this.sett ? this.sett.time : false
+        },
+        shift() {
+            return this.sett.shiftMode
+        }
+    },
     methods: {
         meta_info() {
             return { author: 'C451', version: '2.0.1' }
@@ -241,53 +288,6 @@ export default {
         },
         use_for() { return ['RangeTool'] },
         data_colors() { return [this.color] }
-    },
-    // Define internal setting & constants here
-    computed: {
-        sett() {
-            return this.$props.settings
-        },
-        p1() {
-            return this.$props.settings.p1
-        },
-        p2() {
-            return this.$props.settings.p2
-        },
-        line_width() {
-            return this.sett.lineWidth || 0.9
-        },
-        color() {
-            return this.sett.color ||
-                this.$props.colors.cross
-        },
-        back_color() {
-            return this.sett.backColor || '#9b9ba316'
-        },
-        value_back() {
-            return this.sett.valueBack || '#9b9ba316'
-        },
-        value_color() {
-            return this.sett.valueColor ||
-                this.$props.colors.text
-        },
-        prec() {
-            return this.sett.precision || 2
-        },
-        new_font() {
-            return '12px ' + this.$props.font.split('px').pop()
-        },
-        price() {
-            return 'price' in this.sett ? this.sett.price : true
-        },
-        time() {
-            return 'time' in this.sett ? this.sett.time : false
-        },
-        shift() {
-            return this.sett.shiftMode
-        }
-    },
-    data() {
-        return {}
     }
 
 }

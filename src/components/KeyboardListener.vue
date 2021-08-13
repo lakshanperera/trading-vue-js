@@ -6,7 +6,6 @@
 
 export default {
     name: 'KeyboardListener',
-    render(h) { return h() },
     created: function () {
         this.$emit('register-kb-listener', {
             id: this._uid,
@@ -30,7 +29,8 @@ export default {
         keypress (event) {
             this.$emit('keypress', event)
         },
-    }
+    },
+    render(h) { return h() }
 }
 
 </script>

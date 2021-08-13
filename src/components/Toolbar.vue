@@ -1,17 +1,17 @@
 
 <template>
-    <div class="trading-vue-toolbar" :style="styles"
-        :key="tool_count">
+    <div :key="tool_count" class="trading-vue-toolbar"
+        :style="styles">
         <toolbar-item v-for="(tool, i) in groups"
             v-if="tool.icon && !tool.hidden"
-            @item-selected="selected"
             :key="i"
             :data="tool"
             :subs="sub_map"
             :dc="data"
             :config="config"
             :colors="colors"
-            :selected="is_selected(tool)">
+            :selected="is_selected(tool)"
+            @item-selected="selected">
         </toolbar-item>
     </div>
 </template>
@@ -22,30 +22,11 @@ import ToolbarItem from './ToolbarItem.vue'
 
 export default {
     name: 'Toolbar',
+    components: { ToolbarItem },
     props: [
         'data', 'height', 'colors', 'tv_id', 'config'
     ],
-    components: { ToolbarItem },
-    mounted() {
-    },
-    methods: {
-        selected(tool) {
-            this.$emit('custom-event', {
-                event:'tool-selected', args: [tool.type]
-            })
-            if (tool.group) {
-                // TODO: emit the sub map to DC (save)
-                this.sub_map[tool.group] = tool.type
-            }
-        },
-        is_selected(tool) {
-            if (tool.group) {
-                return !!tool.items.find(
-                    x => x.type === this.data.tool)
-            }
-            return tool.type === this.data.tool
-        }
-    },
+    data() { return { tool_count: 0, sub_map: {} } },
     computed: {
         styles() {
             let colors = this.$props.colors
@@ -95,7 +76,26 @@ export default {
             deep: true
         }
     },
-    data() { return { tool_count: 0, sub_map: {} } }
+    mounted() {
+    },
+    methods: {
+        selected(tool) {
+            this.$emit('custom-event', {
+                event:'tool-selected', args: [tool.type]
+            })
+            if (tool.group) {
+                // TODO: emit the sub map to DC (save)
+                this.sub_map[tool.group] = tool.type
+            }
+        },
+        is_selected(tool) {
+            if (tool.group) {
+                return !!tool.items.find(
+                    x => x.type === this.data.tool)
+            }
+            return tool.type === this.data.tool
+        }
+    }
 }
 
 </script>

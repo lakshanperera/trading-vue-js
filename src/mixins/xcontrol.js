@@ -55,7 +55,7 @@ export default {
             }
             if (this.skin_proto && this.skin_proto.styles) {
                 let sheet = document.createElement('style')
-                sheet.setAttribute("id", id)
+                sheet.setAttribute('id', id)
                 sheet.innerHTML = this.skin_proto.styles
                 this.$el.appendChild(sheet)
             }

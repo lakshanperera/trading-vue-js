@@ -11,6 +11,52 @@ import Price from '../primitives/price.js'
 export default {
     name: 'Candles',
     mixins: [Overlay],
+    data() {
+        return { price: {} }
+    },
+
+    // Define internal setting & constants here
+    computed: {
+        sett() {
+            return this.$props.settings
+        },
+        show_volume() {
+            return 'showVolume' in this.sett ?
+                this.sett.showVolume : true
+        },
+        price_line() {
+            return 'priceLine' in this.sett ?
+                this.sett.priceLine : true
+        },
+        colorCandleUp() {
+            return this.sett.colorCandleUp ||
+            this.$props.colors.candleUp
+        },
+        colorCandleDw() {
+            return this.sett.colorCandleDw ||
+            this.$props.colors.candleDw
+        },
+        colorWickUp() {
+            return this.sett.colorWickUp ||
+            this.$props.colors.wickUp
+        },
+        colorWickDw() {
+            return this.sett.colorWickDw ||
+            this.$props.colors.wickDw
+        },
+        colorWickSm() {
+            return this.sett.colorWickSm ||
+            this.$props.colors.wickSm
+        },
+        colorVolUp() {
+            return this.sett.colorVolUp ||
+            this.$props.colors.volUp
+        },
+        colorVolDw() {
+            return this.sett.colorVolDw ||
+            this.$props.colors.volDw
+        }
+    },
     methods: {
         meta_info() {
             return { author: 'C451', version: '1.2.1' }
@@ -58,52 +104,6 @@ export default {
             }
             return [hi, lo]
         }
-    },
-
-    // Define internal setting & constants here
-    computed: {
-        sett() {
-            return this.$props.settings
-        },
-        show_volume() {
-            return 'showVolume' in this.sett ?
-                this.sett.showVolume : true
-        },
-        price_line() {
-            return 'priceLine' in this.sett ?
-                this.sett.priceLine : true
-        },
-        colorCandleUp() {
-            return this.sett.colorCandleUp ||
-            this.$props.colors.candleUp
-        },
-        colorCandleDw() {
-            return this.sett.colorCandleDw ||
-            this.$props.colors.candleDw
-        },
-        colorWickUp() {
-            return this.sett.colorWickUp ||
-            this.$props.colors.wickUp
-        },
-        colorWickDw() {
-            return this.sett.colorWickDw ||
-            this.$props.colors.wickDw
-        },
-        colorWickSm() {
-            return this.sett.colorWickSm ||
-            this.$props.colors.wickSm
-        },
-        colorVolUp() {
-            return this.sett.colorVolUp ||
-            this.$props.colors.volUp
-        },
-        colorVolDw() {
-            return this.sett.colorVolDw ||
-            this.$props.colors.volDw
-        }
-    },
-    data() {
-        return { price: {} }
     }
 
 }

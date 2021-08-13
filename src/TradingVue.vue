@@ -1,18 +1,18 @@
 
 <template>
     <!-- Main component  -->
-    <div class="trading-vue" v-bind:id="id"
-        @mousedown="mousedown" @mouseleave="mouseleave"
-         :style="{
+    <div :id="id" class="trading-vue"
+        :style="{
             color: this.chart_props.colors.text,
             font: this.font_comp,
             width: this.width+'px',
-            height: this.height+'px'}">
+            height: this.height+'px'}" @mousedown="mousedown"
+         @mouseleave="mouseleave">
         <toolbar v-if="toolbar"
             ref="toolbar"
-            v-on:custom-event="custom_event"
             v-bind="chart_props"
-            v-bind:config="chart_config">
+            :config="chart_config"
+            @custom-event="custom_event">
         </toolbar>
         <widgets v-if="controllers.length"
             ref="widgets"
@@ -22,14 +22,14 @@
         <chart :key="reset"
             ref="chart"
             v-bind="chart_props"
-            v-bind:tv_id="id"
-            v-bind:config="chart_config"
-            v-on:custom-event="custom_event"
-            v-on:range-changed="range_changed"
-            v-on:legend-button-click="legend_button">
+            :tv_id="id"
+            :config="chart_config"
+            @custom-event="custom_event"
+            @range-changed="range_changed"
+            @legend-button-click="legend_button">
         </chart>
         <transition name="tvjs-drift">
-            <the-tip :data="tip" v-if="tip"
+            <the-tip v-if="tip" :data="tip"
                 @remove-me="tip = null"/>
         </transition>
     </div>
@@ -184,6 +184,9 @@ export default {
             default: 0
         }
     },
+    data() {
+        return { reset: 0, tip: null }
+    },
     computed: {
         // Copy a subset of TradingVue props
         chart_props() {
@@ -246,9 +249,6 @@ export default {
                 this.skin_proto.font : this.font
         }
     },
-    data() {
-        return { reset: 0, tip: null }
-    },
     beforeDestroy() {
         this.custom_event({ event: 'before-destroy' })
         this.ctrl_destroy()
@@ -303,7 +303,7 @@ export default {
             }
             return cursor
         },
-        showTheTip(text, color = "orange") {
+        showTheTip(text, color = 'orange') {
             this.tip = { text, color }
         },
         legend_button(event) {
