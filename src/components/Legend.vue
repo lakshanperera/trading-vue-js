@@ -23,6 +23,7 @@
     <div v-for="ind in this.indicators" class="t-vue-ind">
         <span class="t-vue-iname">{{ind.name}}</span>
         <button-group
+            v-if="ind.showLegendButtons"
             :buttons="common.buttons"
             :config="common.config"
             :ov_id="ind.id"
@@ -102,7 +103,8 @@ export default {
                     id: id,
                     values: values ? f(id, values) : this.n_a(1),
                     unk: !(id in (this.$props.meta_props || {})),
-                    loading: x.loading
+                    loading: x.loading,
+                    showLegendButtons: 'legendButtons' in x.settings ? x.settings.legendButtons : true
                 }
             })
         },
